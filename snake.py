@@ -1,11 +1,16 @@
 from turtle import Turtle
 
+import constants
+
 STARTING_POS = [(0, 0), (-20, 0), (-40, 0)]
 MOVE_DISTANCE = 20
 UP = 90
 DOWN = 270
 LEFT = 180
 RIGHT = 0
+
+BORDER_COLLISION_X = (constants.SCREEN_WIDTH / 2) -10
+BORDER_COLLISION_Y = (constants.SCREEN_HEIGHT / 2)
 
 
 class Snake:
@@ -17,11 +22,18 @@ class Snake:
 
     def construct_snake(self):
         for pos in STARTING_POS:
-            seg = Turtle("square")
-            seg.color("white")
-            seg.penup()
-            seg.goto(pos)
-            self.segments.append(seg)
+            self.add_new_segment(pos)
+
+    def add_new_segment(self, position):
+        seg = Turtle("square")
+        seg.color("white")
+        seg.penup()
+        seg.goto(position)
+        self.segments.append(seg)
+
+    def grow(self):
+        last = self.segments[-1]
+        self.add_new_segment(last.position())
 
     def move(self):
         for i in range(len(self.segments)-1, 0, -1):
@@ -48,12 +60,18 @@ class Snake:
         if self.head.heading() != LEFT:
             self.head.setheading(RIGHT)
 
-    def collided_with_border(self, height, width):
+    def collided_with_border(self):
         x = self.head.xcor()
         y = self.head.ycor()
-        if x < width / 2 * -1 or x > width / 2:
-            return True
-        elif y < height / 2 * -1 or y > height / 2:
+        if x < BORDER_COLLISION_X * -1 or x > BORDER_COLLISION_X \
+                or y < BORDER_COLLISION_Y * -1 or y > BORDER_COLLISION_Y:
+            print(f"{BORDER_COLLISION_X},{BORDER_COLLISION_Y}")
             return True
         else:
             return False
+
+    def collided_with_body(self):
+        for seg in self.segments[1:]:
+            if self.head.distance(seg) < 10:
+                return True
+        return False

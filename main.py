@@ -1,18 +1,22 @@
 import time
+import constants
 
 from snake import Snake
 from turtle import Screen
+from food import Food
+from scoreboard import Scoreboard
 
-WIDTH = 600
-HEIGHT = 600
 
 screen = Screen()
 screen.bgcolor("black")
-screen.setup(width=WIDTH, height=HEIGHT)
+screen.setup(width=constants.SCREEN_WIDTH, height=constants.SCREEN_HEIGHT)
 screen.title("Snake Game")
 screen.tracer(0)
 
 s = Snake()
+f = Food()
+sb = Scoreboard()
+
 screen.listen()
 screen.onkey(s.up, "w")
 screen.onkey(s.down, "s")
@@ -24,7 +28,15 @@ while game_is_on:
     screen.update()
     time.sleep(0.1)
     s.move()
-    game_is_on = not s.collided_with_border(width=WIDTH, height=HEIGHT)
 
-print(f"Game Over! Score is {len(s.segments)-3}")
+    # Collision with food
+    if s.head.distance(f) < 15:
+        sb.update_score()
+        s.grow()
+        f.generate()
+
+    # Collision with border / body
+    game_is_on = not s.collided_with_border() and not s.collided_with_body()
+
+sb.update_game_over()
 screen.exitonclick()
