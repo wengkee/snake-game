@@ -65,7 +65,6 @@ class Snake:
         y = self.head.ycor()
         if x < BORDER_COLLISION_X * -1 or x > BORDER_COLLISION_X \
                 or y < BORDER_COLLISION_Y * -1 or y > BORDER_COLLISION_Y:
-            print(f"{BORDER_COLLISION_X},{BORDER_COLLISION_Y}")
             return True
         else:
             return False
@@ -75,3 +74,11 @@ class Snake:
             if self.head.distance(seg) < 10:
                 return True
         return False
+
+    def reset(self):
+        for seg in self.segments:
+            seg.goto(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+
+        self.segments.clear()
+        self.construct_snake()
+        self.head = self.segments[0]

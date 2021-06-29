@@ -36,7 +36,10 @@ while game_is_on:
         f.generate()
 
     # Collision with border / body
-    game_is_on = not s.collided_with_border() and not s.collided_with_body()
+    # game_is_on = not s.collided_with_border() and not s.collided_with_body()
+    if s.collided_with_border() or s.collided_with_body():
+        sb.reset()
+        s.reset()
 
-sb.update_game_over()
+# sb.update_game_over()
 screen.exitonclick()
